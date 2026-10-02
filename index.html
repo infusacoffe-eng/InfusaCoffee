@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Infusa Content Studio · Ideas de Contenido para Instagram y TikTok</title>
+  <meta name="description" content="Mini herramienta web para planificar, generar y estructurar ideas de contenido para Infusa (café de especialidad filtrante individual).">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ═══ HEADER ═══ -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-icon">☕</div>
+        <div class="brand-text">
+          <h1>Infusa Content Studio</h1>
+          <p>Estrategia &amp; Planificación · Instagram &amp; TikTok</p>
+        </div>
+      </div>
+
+      <div class="brand-slogans">
+        <span>“Buen café. Sin complicarte.”</span>
+        <span class="dot">·</span>
+        <span>“Café que fluye contigo.”</span>
+      </div>
+
+      <div class="header-actions">
+        <button class="btn-header" onclick="exportCatalogCsv()" title="Exportar catálogo en formato CSV compatible con Notion y Excel">
+          <span>📊</span> <span class="hide-mob">Exportar CSV</span>
+        </button>
+        <button class="btn-header" onclick="exportCatalogTxt()" title="Descargar catálogo en texto">
+          <span>⤓</span> <span class="hide-mob">Descargar TXT</span>
+        </button>
+        <button class="btn-header btn-inspire" onclick="inspireMe()" title="Elegir una idea aleatoria del catálogo">
+          <span>✦</span> Inspírame
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══ NAVIGATION TABS ═══ -->
+  <nav class="nav-tabs-wrapper">
+    <div class="nav-tabs">
+      <button class="nav-tab active" data-tab="catalog">
+        <span>🗂️ Catálogo de Ideas</span>
+      </button>
+      <button class="nav-tab" data-tab="planner">
+        <span>📅 Planificador Semanal (4 Posts)</span>
+        <span class="tab-badge">Especial</span>
+      </button>
+      <button class="nav-tab" data-tab="hooks">
+        <span>⚡ Laboratorio de Ganchos (Hook Lab)</span>
+      </button>
+      <button class="nav-tab" data-tab="favs" onclick="switchNavTab('favs')">
+        <span>★ Mis Favoritos</span>
+        <span class="tab-badge" id="tabFavCount">0</span>
+      </button>
+      <button class="nav-tab" data-tab="custom">
+        <span>➕ Crear Nueva Idea</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ═══ MAIN APP CONTAINER ═══ -->
+  <main class="main-container">
+
+    <!-- ── TAB 1: CATÁLOGO DE IDEAS ────────────────────────────── -->
+    <section class="tab-pane active" id="pane-catalog">
+      
+      <!-- Quick Stats Banner -->
+      <div class="stats-banner">
+        <div class="stats-group">
+          <div class="stat-item">
+            <span class="stat-num" id="statTotalCount">70+</span> ideas en catálogo
+          </div>
+          <div class="stat-item">
+            <span class="stat-num">6</span> pilares
+          </div>
+          <div class="stat-item">
+            <span class="stat-num">4</span> posts / semana recomendados
+          </div>
+          <div class="stat-item">
+            <span class="stat-num">2</span> plataformas (IG &amp; TikTok)
+          </div>
+        </div>
+        <div class="brand-philosophy-badge">
+          ☕ <em>Foco: Eliminar el tiempo de bloqueo creativo (de 2h/día a minutos).</em>
+        </div>
+      </div>
+
+      <!-- Filters & Search Card -->
+      <div class="filter-card">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="catalogSearch" class="search-input" placeholder="Buscar por palabra clave: oficina, agua caliente, mitos, unboxing, arábica, viaje, regalo...">
+          <button id="searchClearBtn" class="search-clear" onclick="clearSearch()" title="Limpiar búsqueda">&times;</button>
+        </div>
+
+        <div class="filters-grid">
+          <div class="filter-group">
+            <label class="filter-group-label" for="filterPlatform">Plataforma</label>
+            <select id="filterPlatform" class="filter-select">
+              <option value="all">Todas las plataformas</option>
+              <option value="instagram">📷 Instagram (Feed, Reels, Stories)</option>
+              <option value="tiktok">🎵 TikTok (Vlogs, Tendencias, UGC)</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label class="filter-group-label" for="filterPillar">Pilar de contenido</label>
+            <select id="filterPillar" class="filter-select">
+              <option value="all">Todos los pilares</option>
+              <option value="educacion">☕ Educación sobre café</option>
+              <option value="marca">🏷️ Marca y Producto</option>
+              <option value="comunidad">💬 Comunidad e Interacción</option>
+              <option value="lifestyle">✨ Lifestyle y Momentos</option>
+              <option value="bts">🎬 Behind the scenes</option>
+              <option value="tendencias">🔥 Tendencias y Entretenimiento</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label class="filter-group-label" for="filterObjective">Objetivo de negocio</label>
+            <select id="filterObjective" class="filter-select">
+              <option value="all">Todos los objetivos</option>
+              <option value="principiantes">🌱 Acercar a principiantes (Fácil)</option>
+              <option value="educar">🎓 Educar sobre café de especialidad</option>
+              <option value="marca">🚀 Reconocimiento de marca</option>
+              <option value="comunidad">🤝 Construir comunidad fiel</option>
+              <option value="interaccion">❤️ Generar alta interacción / Comentarios</option>
+              <option value="conversion">🛍️ Impulso a compra / WhatsApp</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label class="filter-group-label" for="filterFormat">Formato</label>
+            <select id="filterFormat" class="filter-select">
+              <option value="all">Todos los formatos</option>
+              <option value="reel">🎬 Reel (Instagram)</option>
+              <option value="tiktok">🎵 TikTok (Video corto)</option>
+              <option value="carrusel">📑 Carrusel educativo / visual</option>
+              <option value="post">📌 Post estático / Tipografía</option>
+              <option value="story">📱 Story interactiva</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label class="filter-group-label" for="filterTime">Tiempo de producción</label>
+            <select id="filterTime" class="filter-select">
+              <option value="all">Cualquier tiempo</option>
+              <option value="rapido">⚡ Rápido (&lt; 15 min)</option>
+              <option value="medio">⏱️ Medio (20-30 min)</option>
+              <option value="elaborado">🎬 Elaborado (35-45+ min)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="active-pills-row">
+          <div class="active-pills-container" id="activePillsContainer"></div>
+          <button class="btn-reset-filters" onclick="resetFilters()">↺ Restablecer filtros</button>
+        </div>
+      </div>
+
+      <!-- Results Bar -->
+      <div class="results-bar">
+        <div class="results-count-text">
+          Mostrando <strong id="shownCount">0</strong> ideas de contenido
+        </div>
+        <div class="view-controls">
+          <button class="btn-view-toggle active" id="btnViewGrid" onclick="setViewMode('grid')" title="Vista cuadrícula de tarjetas">⊞</button>
+          <button class="btn-view-toggle" id="btnViewList" onclick="setViewMode('list')" title="Vista lista compacta">☰</button>
+        </div>
+      </div>
+
+      <!-- Cards Grid -->
+      <div class="cards-grid" id="cardsGrid"></div>
+    </section>
+
+    <!-- ── TAB 2: PLANIFICADOR SEMANAL (4 POSTS) ────────────────── -->
+    <section class="tab-pane" id="pane-planner">
+      <div class="planner-header">
+        <div class="planner-header-text">
+          <h2>📅 Planificador Semanal · Matriz de 4 Publicaciones</h2>
+          <p>
+            Diseñado para resolver tu rutina semanal de 4 posts. Con un clic genera una distribución balanceada de pilares para que no tengas que dedicar 2 horas a pensar qué publicar cada día.
+          </p>
+        </div>
+        <div class="planner-header-actions">
+          <button class="btn-planner-action btn-planner-primary" onclick="generateBalancedWeek(true)">
+            🎲 Generar Semana Balanceada
+          </button>
+          <button class="btn-planner-action" onclick="copyWeeklyPlanWhatsApp()">
+            💬 Copiar para WhatsApp
+          </button>
+          <button class="btn-planner-action" onclick="exportWeeklyPlanTxt()">
+            📥 Exportar (.txt)
+          </button>
+        </div>
+      </div>
+
+      <!-- 4 Days Slots Grid -->
+      <div class="planner-slots-grid" id="plannerSlotsGrid"></div>
+
+      <!-- Strategy Guide Callout -->
+      <div class="modal-section-card" style="background:#FFF;border:1.5px solid var(--border);border-radius:var(--radius);padding:24px;">
+        <h4 style="font-size:15px;color:var(--primary);margin-bottom:12px;">
+          ☕ Por qué esta distribución semanal de 4 publicaciones funciona para Infusa:
+        </h4>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));gap:16px;font-size:13px;color:var(--text);">
+          <div>
+            <strong style="color:var(--accent);">Martes · Educación &amp; Principiantes:</strong>
+            <p style="color:var(--text-muted);margin-top:4px;">Derriba la intimidación del café de especialidad. Explica conceptos simples (arábica vs robusta, agua hirviendo, qué es un drip bag).</p>
+          </div>
+          <div>
+            <strong style="color:var(--accent);">Jueves · Momento Lifestyle / Oficina:</strong>
+            <p style="color:var(--text-muted);margin-top:4px;">Asocia Infusa a la vida cotidiana (home office, mañanas con prisa, universidad, viajes). Apela a practicidad y diseño.</p>
+          </div>
+          <div>
+            <strong style="color:var(--accent);">Sábado · Tendencia / Humor (TikTok/Reel):</strong>
+            <p style="color:var(--text-muted);margin-top:4px;">Formato ágil con audios en tendencia, expectativas vs realidad o red flags sobre café malo. Maximiza alcance orgánico.</p>
+          </div>
+          <div>
+            <strong style="color:var(--accent);">Domingo · Comunidad &amp; Interacción:</strong>
+            <p style="color:var(--text-muted);margin-top:4px;">Encuestas, preguntas, debates ligeros (¿team negro o con leche?) para subir engagement antes de comenzar la semana.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── TAB 3: LABORATORIO DE GANCHOS (HOOK LAB) ─────────────── -->
+    <section class="tab-pane" id="pane-hooks">
+      <div class="hook-lab-hero">
+        <h2>⚡ Laboratorio de Ganchos (Hook Lab)</h2>
+        <p>
+          Los primeros 3 segundos de un Reel o TikTok deciden si el usuario se queda o pasa al siguiente video. Aquí tienes aperturas magnéticas probadas para el público de Infusa, categorizadas por intención.
+        </p>
+      </div>
+
+      <!-- Interactive Hook Generator -->
+      <div class="hook-generator-box">
+        <div class="generator-title">✦ Generador Interactivo de Ganchos Personalizados</div>
+        <div class="generator-controls">
+          <div class="generator-field">
+            <label for="hookGenAngle">Enfoque / Ángulo</label>
+            <select id="hookGenAngle">
+              <option value="practicidad">🏷️ Practicidad ("Sin complicarte")</option>
+              <option value="principiante">🌱 Para principiantes (Fácil)</option>
+              <option value="oficina">💼 Oficina &amp; Vida cotidiana</option>
+              <option value="mitos">☕ Mitos y errores comunes</option>
+              <option value="sensorial">✨ Sensorial &amp; ASMR matutino</option>
+            </select>
+          </div>
+
+          <div class="generator-field">
+            <label for="hookGenFormat">Formato deseado</label>
+            <select id="hookGenFormat">
+              <option value="Reel / TikTok">🎬 Reel / TikTok corto</option>
+              <option value="Carrusel">📑 Carrusel de fotos</option>
+              <option value="Story">📱 Story interactiva</option>
+            </select>
+          </div>
+
+          <div class="generator-field">
+            <label for="hookGenTone">Tono</label>
+            <select id="hookGenTone">
+              <option value="Cercano y natural">Cercano y natural</option>
+              <option value="Educativo sin tecnicismos">Educativo sin tecnicismos</option>
+              <option value="Humorístico relatable">Humorístico relatable</option>
+              <option value="Aesthetic y relajado">Aesthetic y relajado</option>
+            </select>
+          </div>
+        </div>
+
+        <button class="btn-generate-hook" onclick="generateInteractiveHooks()">
+          ✦ Generar Ganchos para Infusa
+        </button>
+
+        <div id="generatedHooksBox"></div>
+      </div>
+
+      <!-- Categorized Hooks Grid -->
+      <div id="hookCategoriesContainer"></div>
+    </section>
+
+    <!-- ── TAB 4: MIS FAVORITOS ────────────────────────────────── -->
+    <section class="tab-pane" id="pane-favs">
+      <div class="stats-banner" style="margin-bottom:20px;">
+        <div>
+          <h2 style="font-size:20px;font-weight:800;color:var(--primary);margin-bottom:4px;">★ Tus Ideas Favoritas Guardadas</h2>
+          <p style="font-size:13.5px;color:var(--text-muted);">
+            Ideas seleccionadas para tu banco personal de producción. Puedes asignarlas directamente al planificador semanal.
+          </p>
+        </div>
+      </div>
+      <div class="cards-grid" id="favsCardsGrid"></div>
+    </section>
+
+    <!-- ── TAB 5: CREADOR DE IDEAS PROPIAS ─────────────────────── -->
+    <section class="tab-pane" id="pane-custom">
+      <div class="creator-container">
+        <div class="creator-header">
+          <h2>➕ Registrar una Idea Personalizada</h2>
+          <p>
+            ¿Se te ocurrió una nueva idea mientras preparabas tu café? Regístrala aquí para que se incorpore a tu catálogo con guión, recursos y adaptación.
+          </p>
+        </div>
+
+        <form class="creator-form" onsubmit="handleCreateIdeaSubmit(event)">
+          <div class="form-group">
+            <label class="form-label" for="newIdeaTitle">Título de la idea <span class="req">*</span></label>
+            <input type="text" id="newIdeaTitle" class="form-input" placeholder="Ej: Café con hielo en 3 pasos con filtro Infusa" required>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="newIdeaPillar">Pilar de contenido</label>
+              <select id="newIdeaPillar" class="form-select">
+                <option value="educacion">☕ Educación</option>
+                <option value="marca">🏷️ Marca y Producto</option>
+                <option value="comunidad">💬 Comunidad</option>
+                <option value="lifestyle" selected>✨ Lifestyle</option>
+                <option value="bts">🎬 Behind the scenes</option>
+                <option value="tendencias">🔥 Tendencias</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="newIdeaFormat">Formato</label>
+              <select id="newIdeaFormat" class="form-select">
+                <option value="reel" selected>🎬 Reel</option>
+                <option value="tiktok">🎵 TikTok</option>
+                <option value="carrusel">📑 Carrusel</option>
+                <option value="post">📌 Post estático</option>
+                <option value="story">📱 Story</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="newIdeaPlatform">Plataforma</label>
+              <select id="newIdeaPlatform" class="form-select">
+                <option value="both" selected>📷+🎵 Ambas</option>
+                <option value="instagram">📷 Solo Instagram</option>
+                <option value="tiktok">🎵 Solo TikTok</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="newIdeaObjective">Objetivo principal</label>
+              <select id="newIdeaObjective" class="form-select">
+                <option value="principiantes">🌱 Acercar a principiantes</option>
+                <option value="marca">🚀 Reconocimiento de marca</option>
+                <option value="educar">🎓 Educar sobre café</option>
+                <option value="comunidad">🤝 Construir comunidad</option>
+                <option value="interaccion">❤️ Generar interacción</option>
+                <option value="conversion">🛍️ Venta / WhatsApp</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="newIdeaTime">Tiempo de producción estimado</label>
+              <select id="newIdeaTime" class="form-select">
+                <option value="15 min">⚡ Rápido (15 min)</option>
+                <option value="25 min" selected>⏱️ Medio (25 min)</option>
+                <option value="40 min">🎬 Elaborado (40 min)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="newIdeaHook">Gancho / Hook de apertura (Primeros 3 seg o Portada) <span class="req">*</span></label>
+            <input type="text" id="newIdeaHook" class="form-input" placeholder="Ej: No tires tu café de ayer. Así preparas un cold brew instantáneo con Infusa." required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="newIdeaMessage">Mensaje clave <span class="req">*</span></label>
+            <input type="text" id="newIdeaMessage" class="form-input" placeholder="Ej: Mostrar la versatilidad de Infusa para preparaciones frías sin complicaciones." required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="newIdeaDesc">Descripción o idea general</label>
+            <textarea id="newIdeaDesc" class="form-textarea" placeholder="Describe brevemente de qué trata la publicación o cómo se grabaría."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="newIdeaResources">Recursos necesarios (separados por coma)</label>
+            <input type="text" id="newIdeaResources" class="form-input" placeholder="Ej: Filtro Infusa, Vaso de vidrio, Cubos de hielo, Agua caliente, Celular">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="newIdeaCta">Llamado a la acción (CTA)</label>
+            <input type="text" id="newIdeaCta" class="form-input" placeholder="Ej: ¿Prefieres café caliente o frío? Vota en los comentarios ☕🧊">
+          </div>
+
+          <button type="submit" class="btn-submit-idea">
+            💾 Guardar Idea en el Catálogo
+          </button>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ═══ SPOTLIGHT MODAL (FICHA DETALLADA) ═══ -->
+  <div class="modal-overlay" id="spotlightModal" onclick="closeSpotlight(event)">
+    <div class="modal-container" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-header-title">
+          <span>☕ Ficha de Contenido</span>
+          <span style="opacity:0.6;">·</span>
+          <span id="modalTitleHeader">Educación</span>
+        </div>
+        <button class="modal-btn-close" onclick="closeSpotlight()" title="Cerrar ventana">&times;</button>
+      </div>
+
+      <!-- Modal Tabs -->
+      <div class="modal-nav-tabs">
+        <button class="modal-tab-btn active" data-mtab="concept" onclick="setModalTab('concept')">
+          💡 Concepto &amp; Mensaje
+        </button>
+        <button class="modal-tab-btn" data-mtab="script" onclick="setModalTab('script')">
+          🎬 Guión / Storyboard
+        </button>
+        <button class="modal-tab-btn" data-mtab="adaptation" onclick="setModalTab('adaptation')">
+          📱 Adaptación IG vs TikTok
+        </button>
+        <button class="modal-tab-btn" data-mtab="caption" onclick="setModalTab('caption')">
+          💬 Copy &amp; Hashtags
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-scrollable-body">
+        <div class="card-badges-row" id="modalBadgesBox" style="margin-bottom:12px;"></div>
+        <h2 class="modal-hero-title" id="modalHeroTitle">Título</h2>
+        <div class="modal-hook-box" id="modalHookText">"Gancho"</div>
+        <div id="modalTabContentContainer"></div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <div class="modal-footer-left">
+          <button class="btn-modal-action" id="modalBtnFav" onclick="toggleFavorite(activeModalIdea.id)">
+            ☆ Guardar en favoritos
+          </button>
+          <button class="btn-modal-action" onclick="quickAssignToPlanner(activeModalIdea.id)">
+            📅 Asignar a Semana
+          </button>
+        </div>
+        <div class="modal-footer-right">
+          <button class="btn-modal-action" onclick="copyIdeaWhatsApp(activeModalIdea.id)">
+            💬 Copiar para WhatsApp
+          </button>
+          <button class="btn-modal-action btn-modal-primary" onclick="copyIdeaFull(activeModalIdea.id)">
+            📋 Copiar Ficha Completa
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ TOAST NOTIFICATION ═══ -->
+  <div class="toast-msg" id="toast"></div>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer class="page-footer">
+    <p>
+      <strong>Infusa Content Studio</strong> · Diseñado para la marca <strong>Infusa</strong> (Café de especialidad filtrante individual)
+    </p>
+    <p style="margin-top:6px;font-size:12px;opacity:0.75;">
+      “Buen café. Sin complicarte.” · “Café que fluye contigo.” · Instagram · TikTok · WhatsApp
+    </p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="ideas-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
